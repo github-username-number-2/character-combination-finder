@@ -2,7 +2,7 @@
   made by luke baja
 */
 
-"use strict"; var d
+"use strict";
 
 const e = i => document.getElementById(i);
 
@@ -66,7 +66,6 @@ e("start").onclick = function () {
     for (let i2 = 0, l = charArray.length; i2 < l; i2++) {
       dText += CTN[charArray[i2]]
     };
-    d = CTN
 
     text.innerHTML = dText.split("").reverse().join("");
   }, sleepTime)
