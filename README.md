@@ -1,1 +1,1 @@
-kindof working demo at https://character-combination-finder--lilpeen.repl.co
+"working" demo at https://character-combination-finder--lilpeen.repl.co
