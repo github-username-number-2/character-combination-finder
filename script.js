@@ -2,75 +2,154 @@
   made by luke baja
 */
 
-"use strict";
+!function() {
+  window.CCF = class {
+    fullCombinationSearch(searchString, searchFunction) {
+      let running;
 
-const e = i => document.getElementById(i);
+      return {
+        start: function() {
+          running = true;
 
-const allChars = "qwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()QWERTYUIOPASDFGHJKLZXCVBNM`-=\][';/.,<>?:\"{}|+_~";
+          const numArray = [0], searchLength = searchString.length;
+          let index = 0;
 
-const text = e("text"),
-  input = e("charInput"),
-  sInput = e("sInput"),
-  sPoint = e("sPoint");
+          function add(arrayIndex) {
+            if (numArray[arrayIndex] + 1 === searchLength) {
+              numArray[arrayIndex] = 0;
+              if (arrayIndex + 1 === numArray.length) {
+                numArray.push(0);
+              } else {
+                add(arrayIndex + 1);
+              }
+            } else {
+              numArray[arrayIndex]++;
+            }
+          }
 
-e("aChars").onclick = function () {
-  input.value = allChars
-};
+          function toString(array, keyString) {
+            let string = "";
 
-let i;
-e("start").onclick = function () {
-  "use strict";
+            array.forEach(num => {
+              string += keyString[num];
+            });
 
-  const characters = input.value;
-  const sleepTime = sInput.value;
-  const charlen = characters.length;
+            return string;
+          }
 
-  const CTN = {};
-  for (let i = 0; i < charlen; i++) {
-    CTN[i] = characters[i]
-  };
+          async function loop() {
+            searchFunction({
+              value: toString(numArray, searchString), 
+              index
+            });
 
-  const NTC = {};
-  for (let i = 0; i < charlen; i++) {
-    NTC[characters[i]] = i
-  };
+            add(0);
+            index++;
 
-  let charArray, dText, a2;
-  if (sPoint.value === "") {
-    charArray = [0]
-  } else {
-    charArray = [];
+            if (running) {
+              loop();
+            }
+          }
+          loop();
+        },
 
-    sPoint.value.split("").forEach(function (v) {
-      charArray.push(NTC[v])
-    });
-  };
-
-  i = setInterval(function () {
-    function add(a) {
-      if (charArray[a] === charlen - 1) {
-        add(a + 1);
-        charArray[a] = 0;
-      } else {
-        if (charArray[a] === undefined) {
-          charArray[a] = 0
-        } else {
-          charArray[a]++
+        stop: function() {
+          running = false;
         }
-      }
-    };
-    add(0);
+      };
+    }
 
-    dText = "";
+    ////
+    async alternateCharacterSearch(searchArray, searchFunction) {
+      let running;
+      const multiLengthArray = [];
 
-    for (let i2 = 0, l = charArray.length; i2 < l; i2++) {
-      dText += CTN[charArray[i2]]
-    };
+      searchArray.forEach(array => {
+        if (array.length > 1) {
+          multiLengthArray.push(array);
+        }
+      })
 
-    text.innerHTML = dText.split("").reverse().join("");
-  }, sleepTime)
-};
+      return {
+        start: function() {
+          running = true;
+          
+          const numArray = [0], searchLength = multiLengthArray.length;
+          let index = 0;
 
-e("stop").onclick = function () {
-  clearInterval(i)
-};
+          function add(arrayIndex) {
+            if (numArray[arrayIndex] + 1 === searchLength) {
+              numArray[arrayIndex] = 0;
+              if (arrayIndex + 1 === numArray.length) {
+                numArray.push(0);
+              } else {
+                add(arrayIndex + 1);
+              }
+            } else {
+              numArray[arrayIndex]++;
+            }
+          }
+
+          function toString(array, keyString) {
+            let string = "";
+
+            array.forEach(num => {
+              string += keyString[num];
+            });
+
+            return string;
+          }
+
+          async function loop() {
+            searchFunction({
+              value: toString(numArray, searchString), 
+              index
+            });
+
+            add(0);
+            index++;
+
+            if (running) {
+              loop();
+            }
+          }
+          loop();
+        },
+
+        stop: function() {
+          running = false;
+        }
+      };
+    }
+    ////
+  }
+}();
+
+const finder = new CCF();
+
+const alternateCharacterSearch = finder.alternateCharacterSearch(
+  [
+    [],
+    [],
+    [],
+    []
+  ],
+  function(object) {
+    //
+  }
+);
+
+/*
+const fullCombinationSearch = finder.fullCombinationSearch(
+  "zxcvxz",
+  function(object) {
+    console.log(object.index)
+
+    if(object.index>100){
+      fullCombinationSearch.stop()
+    }
+  }
+);
+
+fullCombinationSearch.start();
+*/
